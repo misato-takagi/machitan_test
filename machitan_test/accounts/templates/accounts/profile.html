@@ -1,0 +1,31 @@
+{% extends 'app/base.html' %}
+
+{% block contents %}
+    <div class="card card-profile my-5 mx-auto">
+        <div class="card-body">
+            <h5 class="card-title text-center"></h5>
+            <table class="profile_table mb-4">
+                <tr>
+                    <th class="header">名前</th>
+                    <td class="data">{{user_data.first_name}}{{user_data.last_name}}</td>
+                </tr>
+                <tr>
+                    <th class="header">メールアドレス</th>
+                    <td class="data">{{user_data.email}}</td>
+                </tr>
+                <tr>
+                    <th class="header">所属</th>
+                    <td class="data">{{user_data.department}}</td>
+                </tr>
+                <tr>
+                    <th class="header">入会日</th>
+                    <td class="data">{{user_data.created}}</td>
+                </tr>
+                
+            </table>
+            <div class="button mx-auto">
+                <a href="" class="btn btn-lg btn-warning btn-block">編集</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

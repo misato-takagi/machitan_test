@@ -1,0 +1,63 @@
+{% load static %}
+<h1>まちたん！ラクラク予約</h1>
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- bootstarp -->
+    <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous"> -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" >
+    
+    <!-- sytle.css -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <title>{% block title %}{% endblock %}</title>
+
+    <!-- ベースCSS -->
+    <!-- <link rel="stylesheet" href="{% static 'css/U_style.css' %}"> -->
+    <!-- 個人CSS -->
+    <!-- <link rel="stylesheet" href="{% static 'css/takagi.css' %}" type="text/css"> -->
+
+    {% block head %}{% endblock %}
+</head>
+<body>
+    <div class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a href="/" class="nav-link">ホーム</a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'profile' %}" class="nav-link">プロフィール</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <main>
+        <div class="container">
+            {% block contents %}
+            {% endblock %}
+        </div>
+    </main>
+
+    <footer class="py-2 bg-dark">
+        <p class="m-0 text-center text-white">Copyright &copy; speedreserve</p>
+    </footer>
+    <!-- <nav>
+        <li><a href="#">オンライン受付</a></li>
+        <li><a href="#">予約履歴</a></li>
+        <li><a href="#">成長記録</a></li>
+        <li><a href="user.myp.html">マイページ</a></li>
+        <li><a href="user.inquiry.html">お問い合わせ</a></li>
+        <li><a href="user.logout.html">ログアウト</a></li>
+        <div class="animation start-home"></div>
+    </nav> -->
+    
+    {% block extra_js %}
+    {% endblock %}
+
+     
+</body>
+</html>
