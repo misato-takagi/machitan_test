@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from django.views import View
 from accounts.models import CustomUser
 from accounts.forms import ProfileForm
@@ -32,5 +32,16 @@ class ProfileEditView(View):
         form = ProfileForm(request.POST or None)
         if form.is_valid():
             user_data = CustomUser.objects.get(id = request.user.id)
+            user_data.first_name = form.cleaned_data['first_name']
+            user_data.last_name = form.cleaned_data['last_name']
+            user_data.department = form.cleaned_data['department']
+            #入力データを保存する
+            user_data.save()
+            #編集が完了したらprofile画面に遷移する
+            return redirect('profile')
+            
+        return render(request, 'accounts/profile.html',{
+            'form' :form
+        })
             
         
