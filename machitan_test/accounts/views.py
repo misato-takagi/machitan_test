@@ -21,8 +21,8 @@ class ProfileEditView(LoginRequiredMixin,View):
             initial={
                 'first_name':user_data.first_name,
                 'last_name':user_data.last_name,
-                'department':user_data.department,
-
+                'description':user_data.description,
+                'image': user_data.image,
             }       
         )
 
@@ -36,7 +36,10 @@ class ProfileEditView(LoginRequiredMixin,View):
             user_data = CustomUser.objects.get(id = request.user.id)
             user_data.first_name = form.cleaned_data['first_name']
             user_data.last_name = form.cleaned_data['last_name']
-            user_data.department = form.cleaned_data['department']
+            user_data.description = form.cleaned_data['description']
+            #画像が変更されたことを確認出来たら（下記の行の意味）
+            if request.FILES.get('image'):
+                user_data.image = request.FILES.get('image')
             #入力データを保存する
             user_data.save()
             #編集が完了したらprofile画面に遷移する
