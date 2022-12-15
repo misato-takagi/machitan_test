@@ -116,7 +116,8 @@ class BookingView(View):
                 booking.tel = form.cleaned_data['tel']
                 booking.remarks = form.cleaned_data['remarks']
                 booking.save()
-                return redirect('store')
+                #予約完了ページに遷移する
+                return redirect('thanks')
 
         return render(request,'app/booking.html',{
             'staff_data':staff_data,
@@ -127,3 +128,8 @@ class BookingView(View):
             'form':form,
 
         })
+
+
+class ThanksView(View):
+    def get(self, request, *args, **kwargs):
+        return render(request, 'app/thanks.html')

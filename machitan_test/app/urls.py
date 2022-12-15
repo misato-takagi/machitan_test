@@ -9,8 +9,11 @@ urlpatterns = [
     path('calender/<int:pk>',views.CalenderView.as_view(),name='calender'),
     #日程を指定した場合のURL
     path('calender/<int:pk>/<int:year>/<int:month>/<int:day>',views.CalenderView.as_view(),name='calender'),
-    #
+    #予約のURL
     path('booking/<int:pk>/<int:year>/<int:month>/<int:day>/<int:hour>',views.BookingView.as_view(),name='booking'),
+    #予約完了URL
+    path('thanks/',views.ThanksView.as_view(),name='thanks'),
+
 
 
 ]
