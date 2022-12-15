@@ -1,4 +1,4 @@
-from django.shortcuts import render,get_object_or_404
+from django.shortcuts import render,get_object_or_404,redirect
 from django.views.generic import View
 #ログインしていない場合はログインページへ進むように設定する
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -6,7 +6,7 @@ from .models import Store,Staff,Booking
 from datetime import datetime, date, timedelta, time
 from django.db.models import Q
 from django.utils.timezone import localtime, make_aware
-
+from app.forms import BookingForm
 
 class StoreView(View):
     def get(self,request, *args, **kwargs):
@@ -57,7 +57,7 @@ class CalenderView(View):
         for booking in booking_data:
             local_time = localtime(booking.start)
             booking_date = local_time.date()
-            booking_hour = local_time.hour()
+            booking_hour = local_time.hour
             if (booking_hour in calender) and (booking_date in calender[booking_hour]):
                 calender[booking_hour][booking_date] = False
 
@@ -70,4 +70,60 @@ class CalenderView(View):
             'before':days[0]- timedelta(days=7),
             'next': days[-1] + timedelta(days=1),
             'today' : today, 
+        })
+
+class BookingView(View):
+    def get(self,request, *args, **kwargs):
+
+        staff_data = Staff.objects.filter(id=self.kwargs['pk']).select_related('user').select_related('store')[0]
+        year = self.kwargs.get('year')
+        month = self.kwargs.get('month')
+        day = self.kwargs.get('day')
+        hour = self.kwargs.get('hour')
+        form = BookingForm(request.POST or None)
+
+        return render(request, 'app/booking.html',{
+            'staff_data':staff_data,
+            'year':year,
+            'month':month,
+            'day':day,
+            'hour':hour,
+            'form':form,
+        })
+
+    def post(self,request, *args , **kwargs):
+        #スタッフデータをIDでフィルターして取得する
+        staff_data = get_object_or_404(Staff,id = self.kwargs['pk'])
+        year = self.kwargs.get('year')
+        month = self.kwargs.get('month')
+        day = self.kwargs.get('day')
+        hour = self.kwargs.get('hour')
+        start_time = make_aware(datetime(year=year,month=month,day=day,hour=hour))
+        end_time = make_aware(datetime(year=year,month=month,day=day,hour=hour + 1))
+        booking_data = Booking.objects.filter(staff = staff_data,start = start_time)
+        form = BookingForm(request.POST or None)
+        #予約確定ボタンを押さないと予約が確定しない為、他の人が先に予約ボタンを押すと下記が表示される
+        if booking_data.exists():
+            form.add_error = (None,'既に予約があります。\n別の日時で予約をお願いします。')
+        else:
+            if form.is_valid():
+                booking = Booking()
+                booking.staff = staff_data
+                booking.start = start_time
+                booking.end = end_time
+                booking.first_name = form.cleaned_data['first_name']
+                booking.last_name = form.cleaned_data['last_name']
+                booking.tel = form.cleaned_data['tel']
+                booking.remarks = form.cleaned_data['remarks']
+                booking.save()
+                return redirect('store')
+
+        return render(request,'app/booking.html',{
+            'staff_data':staff_data,
+            'year':year,
+            'month':month,
+            'day':day,
+            'hour':hour,
+            'form':form,
+
         })

@@ -64,7 +64,8 @@
                                 {% if datetime <= today %} 
                                     ー
                                 {% elif book %}
-                                    <a href=''>
+                                <!-- 予約に遷移する -->
+                                    <a href='{% url "booking" staff_data.pk datetime.year datetime.month datetime.day hour %}'>
                                         <i class="far fa-circle text-info"></i>
                                     </a>
                                 {% else %}
