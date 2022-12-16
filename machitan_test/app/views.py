@@ -212,6 +212,7 @@ def Holiday(request, year, month, day, hour):
     return redirect('mypage',year=start_date.year, month= start_date.month, day = start_date.day)
 
 
+<<<<<<< HEAD
 @require_POST
 def Delete(request,year,month,day,hour):
     start_time = make_aware(datetime(year=year,month=month,day=day,hour=hour))
@@ -225,3 +226,5 @@ def Delete(request,year,month,day,hour):
     if weekday != 6:
         start_date = start_date -timedelta(days=weekday +1)
     return redirect('mypage',year =start_date.year, month= start_date.month, day = start_date.day)
+=======
+>>>>>>> b9d261dba379c5d4c920a5a805d9caa38b23b349
