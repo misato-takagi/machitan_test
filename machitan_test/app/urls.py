@@ -15,6 +15,8 @@ urlpatterns = [
     path('thanks/',views.ThanksView.as_view(),name='thanks'),
     #スタッフ専用ページ
     path('mypage/<int:year>/<int:month>/<int:day>/',views.MypageView.as_view(),name='mypage'),
+    #スタッフが休日設定できるページ
+    path('mypage/holiday/<int:year>/<int:month>/<int:day>/<int:hour>',views.Holiday,name='holiday'),
     
 
 
