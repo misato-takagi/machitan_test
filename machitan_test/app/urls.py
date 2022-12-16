@@ -13,7 +13,9 @@ urlpatterns = [
     path('booking/<int:pk>/<int:year>/<int:month>/<int:day>/<int:hour>',views.BookingView.as_view(),name='booking'),
     #予約完了URL
     path('thanks/',views.ThanksView.as_view(),name='thanks'),
-
+    #スタッフ専用ページ
+    path('mypage/<int:year>/<int:month>/<int:day>/',views.MypageView.as_view(),name='mypage'),
+    
 
 
 ]

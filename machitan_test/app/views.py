@@ -10,6 +10,13 @@ from app.forms import BookingForm
 
 class StoreView(View):
     def get(self,request, *args, **kwargs):
+        #ログインしているかどうか
+        if request.user.is_authenticated:
+            start_date = date.today()
+            weekday = start_date.weekday()
+            if weekday != 6:
+                start_date = start_date - timedelta(days=weekday +1)
+            return redirect('mypage',start_date.year,start_date.month,start_date.day)
         #Store情報を全て取得する
         store_data = Store.objects.all()
 
@@ -133,3 +140,51 @@ class BookingView(View):
 class ThanksView(View):
     def get(self, request, *args, **kwargs):
         return render(request, 'app/thanks.html')
+
+
+class MypageView(LoginRequiredMixin,View):
+    #CalenderViewとほぼ同じなのでコピーして貼り付ける
+    def get(self, request, *args, **kwargs):
+        #スタッフデータはログインIDから取得
+        staff_data = Staff.objects.filter(id = request.user.id).select_related('user').select_related('store')[0]
+        
+        #日付をURLから取得している,todayを削除している
+        year = self.kwargs.get('year')
+        month = self.kwargs.get('month')
+        day = self.kwargs.get('day')
+        start_date = date(year=year,month=month,day=day)
+        days = [start_date + timedelta(days=day) for day in range(7)]
+        start_day = days[0]
+        end_day = days[-1]
+
+        calender = {}
+        for hour in range(10,21):
+            row = {}
+            for day_ in days:
+                row[day_] = ''
+            calender[hour] = row
+        start_time = make_aware(datetime.combine(start_day, time(hour=10,minute=0,second=0)))
+        end_time = make_aware(datetime.combine(end_day,time(hour=20, minute=15,second=0)))
+        booking_data = Booking.objects.filter(staff= staff_data).exclude(Q(start__gt = end_time)| Q(end__lt = start_time ))
+        for booking in booking_data:
+            local_time = localtime(booking.start)
+            booking_date = local_time.date()
+            booking_hour = local_time.hour
+            if (booking_hour in calender) and (booking_date in calender[booking_hour]):
+                #予約した人の名前が分かるようにしている
+                calender[booking_hour][booking_date] = booking.first_name
+
+        return render(request, 'app/mypage.html',{
+            'staff_data':staff_data,
+            'booking_data':booking_data,
+            'calender':calender,
+            'days': days,
+            'start_day': start_day,
+            'end_day': end_day,
+            'before':days[0]- timedelta(days=7),
+            'next': days[-1] + timedelta(days=1),
+            'year':year ,
+            'month': month,
+            'day': day,
+        })
+
