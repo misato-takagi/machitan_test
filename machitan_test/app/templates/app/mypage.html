@@ -38,9 +38,18 @@
                             {% for datetime,book in booking_date.items %}
                             <td>
                                 {% if book == '' %}
-                                    出勤
+                                <!-- 休日を設定できるようにする -->
+                                    <form action="{% url 'holiday' datetime.year datetime.month datetime.day booking_hour %}" method="POST" class="">
+                                        {% csrf_token %}
+                                        <button class="btn btn-light" type="submit">出勤</button>
+                                    </form>
                                 {% else %}
-                                    <p class="mb-0 font-weight-bold text-success">{{ book }}様</p>
+                                <!-- 予約があればお客様の名前、なければ休みを表示する -->
+                                    {% if book == None %}
+                                        <p class="mb-0">休み</p>
+                                    {% else %}
+                                        <p class="mb-0 font-weight-bold text-success">{{ book }}様</p>
+                                    {% endif %}
                                 {% endif %}
                             </td>
                             {% endfor %}

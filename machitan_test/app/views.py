@@ -7,6 +7,7 @@ from datetime import datetime, date, timedelta, time
 from django.db.models import Q
 from django.utils.timezone import localtime, make_aware
 from app.forms import BookingForm
+from django.views.decorators.http import require_POST
 
 class StoreView(View):
     def get(self,request, *args, **kwargs):
@@ -187,4 +188,27 @@ class MypageView(LoginRequiredMixin,View):
             'month': month,
             'day': day,
         })
+
+#デコレーターを使用してボタンが押されたときのみ動作するようにさせる
+@require_POST
+def Holiday(request, year, month, day, hour):
+    #スタッフデータをログインユーザーでフィルターして取得
+    staff_data = Staff.objects.get(id = request.user.id)
+    start_time = make_aware(datetime(year=year,month=month,day=day,hour=hour))
+    #終了時刻は開始時刻のプラス１時間
+    end_time = make_aware(datetime(year=year,month=month,day=day,hour=hour +1))
+
+    #create関数で予約データをデータベースに登録する
+    Booking.objects.create(
+        staff = staff_data,
+        start = start_time,
+        end = end_time,
+    )
+    start_date = date(year=year,month=month,day=day,)
+    weekday = start_date.weekday()
+    #カレンダーは日曜日から開始するようにする
+    if weekday != 6:
+        start_date = start_date -timedelta(days=weekday +1)
+    return redirect('mypage',year=start_date.year, month= start_date.month, day = start_date.day)
+
 
