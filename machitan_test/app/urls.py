@@ -17,7 +17,9 @@ urlpatterns = [
     path('mypage/<int:year>/<int:month>/<int:day>/',views.MypageView.as_view(),name='mypage'),
     #スタッフが休日設定できるページ
     path('mypage/holiday/<int:year>/<int:month>/<int:day>/<int:hour>',views.Holiday,name='holiday'),
-    
+    #予約をキャンセルするページ
+    path('mypage/delete/<int:year>/<int:month>/<int:day>/<int:hour>',views.Delete,name='delete'),
+
 
 
 ]
